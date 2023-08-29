@@ -822,6 +822,7 @@ namespace HoudiniEngineUnity
 	    cookOptions.splitGroupSH = 0;
 	    cookOptions.splitAttrSH = 0;
 	    cookOptions.splitPointsByVertexAttributes = false;
+	    cookOptions.preferOutputNodes = true;
 
 	    cookOptions.cookTemplatedGeos = HEU_PluginSettings.CookTemplatedGeos;
 	    cookOptions.maxVerticesPerPrimitive = HEU_PluginSettings.MaxVerticesPerPrimitive;
