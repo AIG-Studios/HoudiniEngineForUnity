@@ -914,7 +914,7 @@ namespace HoudiniEngineUnity
 		//}
 	 //   }
 
-		if(GlobalObjectId.TryParse(name, out var gid)
+		if(GlobalObjectId.TryParse(name, out var gid))
 		{
 			return GlobalObjectId.GlobalObjectIdentifierToObjectSlow(gid) as GameObject;
 		}
