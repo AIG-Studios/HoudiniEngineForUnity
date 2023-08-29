@@ -33,6 +33,8 @@ using UnityEngine.Tilemaps;
 #if UNITY_EDITOR
 using System.Runtime.CompilerServices;
 
+using UnityEditor;
+
 [assembly: InternalsVisibleTo("HoudiniEngineUnityEditor")]
 [assembly: InternalsVisibleTo("HoudiniEngineUnityEditorTests")]
 [assembly: InternalsVisibleTo("HoudiniEngineUnityPlayModeTests")]
@@ -604,15 +606,31 @@ namespace HoudiniEngineUnity
 
 		if (inputObject._gameObject != null)
 		{
-		    inputObjectPreset._gameObjectName = inputObject._gameObject.name;
-
-		    // Tag whether scene or project input object
-		    inputObjectPreset._isSceneObject = !HEU_GeneralUtility.IsGameObjectInProject(inputObject._gameObject);
-		    if (!inputObjectPreset._isSceneObject)
-		    {
-			// For inputs in project, use the project path as name
-			inputObjectPreset._gameObjectName = HEU_AssetDatabase.GetAssetOrScenePath(inputObject._gameObject);
-		    }
+		 // inputObjectPreset._gameObjectName = inputObject._gameObject.name;
+		 //
+		 // // Tag whether scene or project input object
+		 // inputObjectPreset._isSceneObject = !HEU_GeneralUtility.IsGameObjectInProject(inputObject._gameObject);
+		 // if (!inputObjectPreset._isSceneObject)
+		 // {
+		 //	// For inputs in project, use the project path as name
+		 //	inputObjectPreset._gameObjectName = HEU_AssetDatabase.GetAssetOrScenePath(inputObject._gameObject);
+		 // }
+         
+            // Tag whether scene or project input object
+            inputObjectPreset._isSceneObject = !HEU_GeneralUtility.IsGameObjectInProject(inputObject._gameObject);
+            if (inputObjectPreset._isSceneObject)
+            { 
+#if UNITY_EDITOR
+                inputObjectPreset._gameObjectName = GlobalObjectId.GetGlobalObjectIdSlow(inputObject._gameObject).ToString();
+#else
+                inputObjectPreset._gameObjectName = "";
+#endif
+            }
+            else
+            {
+                // For inputs in project, use the project path as name
+                inputObjectPreset._gameObjectName = HEU_AssetDatabase.GetAssetOrScenePath(inputObject._gameObject);
+            }
 		}
 		else
 		{

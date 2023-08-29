@@ -892,27 +892,32 @@ namespace HoudiniEngineUnity
 	public static GameObject GetGameObjectByNameInScene(string name)
 	{
 #if UNITY_EDITOR
-	    int numScenes = UnityEditor.SceneManagement.EditorSceneManager.sceneCount;
-	    for (int i = 0; i < numScenes; ++i)
-	    {
-		var scene = UnityEditor.SceneManagement.EditorSceneManager.GetSceneAt(i);
-		if (scene.isLoaded)
+	 //   int numScenes = UnityEditor.SceneManagement.EditorSceneManager.sceneCount;
+	 //   for (int i = 0; i < numScenes; ++i)
+	 //   {
+		//var scene = UnityEditor.SceneManagement.EditorSceneManager.GetSceneAt(i);
+		//if (scene.isLoaded)
+		//{
+		//    GameObject[] gameObjects = scene.GetRootGameObjects();
+		//    int numObjects = gameObjects.Length;
+		//    for (int j = 0; j < numObjects; ++j)
+		//    {
+		//	Transform[] childTransforms = gameObjects[j].GetComponentsInChildren<Transform>(true);
+		//	foreach (Transform t in childTransforms)
+		//	{
+		//	    if (t.gameObject.name.Equals(name))
+		//	    {
+		//		return t.gameObject;
+		//	    }
+		//	}
+		//    }
+		//}
+	 //   }
+
+		if(GlobalObjectId.TryParse(name, out var gid)
 		{
-		    GameObject[] gameObjects = scene.GetRootGameObjects();
-		    int numObjects = gameObjects.Length;
-		    for (int j = 0; j < numObjects; ++j)
-		    {
-			Transform[] childTransforms = gameObjects[j].GetComponentsInChildren<Transform>(true);
-			foreach (Transform t in childTransforms)
-			{
-			    if (t.gameObject.name.Equals(name))
-			    {
-				return t.gameObject;
-			    }
-			}
-		    }
+			return GlobalObjectId.GlobalObjectIdentifierToObjectSlow(gid) as GameObject;
 		}
-	    }
 #else
 			HEU_Logger.LogWarning(HEU_Defines.HEU_USERMSG_NONEDITOR_NOT_SUPPORTED);
 #endif
