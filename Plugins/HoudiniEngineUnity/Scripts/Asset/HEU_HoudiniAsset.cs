@@ -873,7 +873,7 @@ namespace HoudiniEngineUnity
 		    {
 			HEU_EditorUtility.SelectObject(prefabGO);
 
-			InvokeBakedEvent(true, new List<GameObject>() { prefabGO }, true);
+			InvokeBakedEvent(true, bakedAssetPath, new List<GameObject>() { prefabGO }, true);
 
 			HEU_Logger.LogFormat("Exported prefab to {0}", bakedAssetPath);
 		    }
@@ -905,9 +905,8 @@ namespace HoudiniEngineUnity
 	    GameObject newClonedRoot = CloneAssetWithoutHDA(ref bakedAssetPath, bWriteMeshesToAssetDatabase, bReconnectPrefabInstances);
 	    if (newClonedRoot != null)
 	    {
-		HEU_EditorUtility.SelectObject(newClonedRoot);
-
-		InvokeBakedEvent(true, new List<GameObject>() { newClonedRoot }, true);
+            HEU_EditorUtility.SelectObject(newClonedRoot);
+            InvokeBakedEvent(true, bakedAssetPath, new List<GameObject>() { newClonedRoot }, true);
 	    }
 	    return newClonedRoot;
 	}
@@ -982,7 +981,7 @@ namespace HoudiniEngineUnity
 		    // Note using ReplacePrefabOptions.ReplaceNameBased will keep local transform values and other changes on instances.
 		    HEU_EditorUtility.ReplacePrefab(newClonedRoot, bakeTargetGO, HEU_EditorUtility.HEU_ReplacePrefabOptions.ReplaceNameBased);
 
-		    InvokeBakedEvent(true, new List<GameObject>() { bakeTargetGO }, false);
+            InvokeBakedEvent(true, bakedAssetPath, new List<GameObject>() { bakeTargetGO }, false);
 		}
 		finally
 		{
@@ -1125,7 +1124,7 @@ namespace HoudiniEngineUnity
 		}
 	    }
 
-	    InvokeBakedEvent(bBakedSuccessful, outputObjects, false);
+	    InvokeBakedEvent(bBakedSuccessful, targetAssetPath, outputObjects, false);
 
 	    return true;
 	}
@@ -3862,13 +3861,19 @@ namespace HoudiniEngineUnity
 	    return null;
 	}
 
-	private void InvokeBakedEvent(bool bSuccess, List<GameObject> outputObjects, bool isNewBake)
+	private void InvokeBakedEvent(bool bSuccess, string bakedAssetPath, List<GameObject> outputObjects, bool isNewBake)
 	{
 	    if (_bakedDataEvent != null)
 	    {
 		_bakedDataEvent.Invoke(new HEU_BakedEventData(this, bSuccess, outputObjects, isNewBake));
 	    }
-	}
+
+        if (bSuccess)
+        {
+            HEU_AssetPresetUtility.SaveAssetPresetToFile(this, $"{bakedAssetPath}/preset.heupreset");
+            HEU_AssetDatabase.SaveAndRefreshDatabase();
+        }
+    }
 
 	/// <summary>
 	/// Return a clone of this asset. The returned object might be a single
