@@ -31,6 +31,7 @@ using UnityEngine;
 
 #if UNITY_EDITOR
 using UnityEditor;
+using UnityEditor.SceneManagement;
 #endif
 
 namespace HoudiniEngineUnity
@@ -1084,7 +1085,14 @@ namespace HoudiniEngineUnity
 	public static string GetAssetBakedPathWithAssetName(string assetName)
 	{
 #if UNITY_EDITOR
-	    return HEU_Platform.BuildPath(GetAssetBakedPath(), assetName);
+        var rootPath = HEU_Platform.BuildPath(GetAssetBakedPath(), EditorSceneManager.GetActiveScene().name);
+
+        if (!AssetDatabase.IsValidFolder(rootPath))
+        {
+            CreatePathWithFolders(rootPath);
+        }
+
+        return HEU_Platform.BuildPath(rootPath, assetName);
 #else
 	    // TODO RUNTIME: AssetDatabase is not supported at runtime. Do we need to support this for runtime?
 	    HEU_Logger.LogWarning(HEU_Defines.HEU_USERMSG_NONEDITOR_NOT_SUPPORTED);
