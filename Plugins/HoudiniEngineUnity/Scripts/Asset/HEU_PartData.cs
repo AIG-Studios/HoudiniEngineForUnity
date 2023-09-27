@@ -2060,7 +2060,7 @@ namespace HoudiniEngineUnity
 	    }
 
 	    bool isInstancer = IsInstancerAnyType();
-	    BakePartToGameObject(this, OutputGameObject, targetGO, ParentAsset.AssetName, isInstancer, bDeleteExistingComponents, bDontDeletePersistantResources, bWriteMeshesToAssetDatabase, ref bakedAssetPath, sourceToTargetMeshMap, sourceToCopiedMaterials, ref assetDBObject, assetObjectFileName, bReconnectPrefabInstances, bKeepPreviousTransformValues);
+	    BakePartToGameObject(this, OutputGameObject, targetGO, ParentAsset.BakeAssetName(), isInstancer, bDeleteExistingComponents, bDontDeletePersistantResources, bWriteMeshesToAssetDatabase, ref bakedAssetPath, sourceToTargetMeshMap, sourceToCopiedMaterials, ref assetDBObject, assetObjectFileName, bReconnectPrefabInstances, bKeepPreviousTransformValues);
 	}
 
 	/// <summary>

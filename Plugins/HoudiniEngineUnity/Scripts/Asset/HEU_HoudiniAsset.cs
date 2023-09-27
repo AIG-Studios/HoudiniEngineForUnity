@@ -184,6 +184,9 @@ namespace HoudiniEngineUnity
 	public string AssetName { get { return _assetName; } }
 
 	/// <inheritdoc />
+	public string OverridenOutputAssetName { get { return _overridenAssetOutputName; } set { _overridenAssetOutputName = value; } }	
+
+	/// <inheritdoc />
 	public string AssetOpName { get { return _assetOpName; } }
 
 	/// <inheritdoc />
@@ -263,6 +266,9 @@ namespace HoudiniEngineUnity
 
 	[SerializeField]
 	private string _assetName;
+
+	[SerializeField]
+	private string _overridenAssetOutputName;	
 
 	[SerializeField]
 	private string _assetOpName;
@@ -864,10 +870,10 @@ namespace HoudiniEngineUnity
 		    if (string.IsNullOrEmpty(bakedAssetPath))
 		    {
 			// Need to create the baked folder to store the prefab
-			bakedAssetPath = HEU_AssetDatabase.CreateUniqueBakePath(_assetName);
+			bakedAssetPath = HEU_AssetDatabase.CreateUniqueBakePath(BakeAssetName());
 		    }
 
-		    string prefabPath = HEU_AssetDatabase.AppendPrefabPath(bakedAssetPath, _assetName);
+		    string prefabPath = HEU_AssetDatabase.AppendPrefabPath(bakedAssetPath, BakeAssetName());
 		    GameObject prefabGO = HEU_EditorUtility.SaveAsPrefabAsset(prefabPath, newClonedRoot);
 		    if (prefabGO != null)
 		    {
@@ -975,7 +981,7 @@ namespace HoudiniEngineUnity
 		    if (string.IsNullOrEmpty(bakedAssetPath))
 		    {
 			// Need to create the baked folder to store the prefab
-			bakedAssetPath = HEU_AssetDatabase.CreateUniqueBakePath(_assetName);
+			bakedAssetPath = HEU_AssetDatabase.CreateUniqueBakePath(BakeAssetName());
 		    }
 
 		    // Note using ReplacePrefabOptions.ReplaceNameBased will keep local transform values and other changes on instances.
@@ -1024,6 +1030,8 @@ namespace HoudiniEngineUnity
 
 	    // Need to get raw OP name otherwise duplicates may mess up the naming
 	    string rawOpName = HEU_GeneralUtility.GetRawOperatorName(_assetOpName);
+		if (!string.IsNullOrEmpty(_overridenAssetOutputName))
+            rawOpName = _overridenAssetOutputName;
 	    string assetDBObjectFileName = HEU_AssetDatabase.AppendMeshesAssetFileName(rawOpName);
 
 	    List<HEU_PartData> clonableParts = new List<HEU_PartData>();
@@ -3899,6 +3907,8 @@ namespace HoudiniEngineUnity
 
 	    // Need to get raw OP name otherwise duplicates may mess up the naming
 	    string rawOpName = HEU_GeneralUtility.GetRawOperatorName(_assetOpName);
+		if (!string.IsNullOrEmpty(_overridenAssetOutputName))
+            rawOpName = _overridenAssetOutputName;
 	    string newAssetDBObjectFileName = HEU_AssetDatabase.AppendMeshesAssetFileName(rawOpName);
 
 	    Transform rootTransform = _rootGameObject.transform;
@@ -4683,6 +4693,11 @@ namespace HoudiniEngineUnity
 		_savedAssetPreset.volumeCachePresets.Remove(preset);
 	    }
 	}
+
+	internal string BakeAssetName()
+	{
+		return string.IsNullOrEmpty(_overridenAssetOutputName) ? _assetName : _overridenAssetOutputName;
+	}	
 
 	/// <summary>
 	/// Applies volumecache presets to volume parts. This sets terrain layer settings such as material.
